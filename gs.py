@@ -7,34 +7,37 @@ import pdb,time,warnings
 
 __all__=['gs','mgs','icgs']
 
-def mgs(Q,u,M=None):
+def mgs(u,Q,MQ=None,M=None):
     '''
     Modified Gram-Schmidt orthogonalisation,
     
     Parameters:
-        :Q: matrix, the search space.
         :u: vector, the vector to be orthogonalized.
+        :Q: matrix, the search space.
         :M: matrix/None, the matrix, if provided, perform M-orthogonal.
+        :MQ: matrix, the matrix of M*Q, if provided, perform M-orthogonal.
 
     Return:
         vector, orthogonalized vector u.
     '''
     assert(ndim(u)==2)
     uH=u.T.conj()
-    MQ=M.dot(Q) if M is not None else Q
+    if MQ is None:
+        MQ=M.dot(Q) if M is not None else Q
     for i in xrange(Q.shape[1]):
         s=uH.dot(MQ[:,i:i+1])
         u=u-s.conj()*Q[:,i:i+1]
     return u
 
-def icgs(Q,u,M=None):
+def icgs(u,Q,M=None,return_norm=False):
     '''
     Iterative Classical M-orthogonal Gram-Schmidt orthogonalization.
 
     Parameters:
-        :Q: matrix, the search space.
         :u: vector, the vector to be orthogonalized.
+        :Q: matrix, the search space.
         :M: matrix/None, the matrix, if provided, perform M-orthogonal.
+        :return_norm: bool, return the norm of u.
 
     Return:
         vector, orthogonalized vector u.
@@ -55,15 +58,15 @@ def icgs(Q,u,M=None):
         r_pre=r1
     if r1<=alpha*r_pre:
         warnings.warn('loss of orthogonality @icgs.')
-    return u
+    return u,r1 if return_norm else u
 
-def gs(Q,u,M=None):
+def gs(u,Q,M=None):
     '''
     Classical Gram-Schmidt orthogonalisation.
     
     Parameters:
-        :Q: matrix, the search space.
         :u: vector, the vector to be orthogonalized.
+        :Q: matrix, the search space.
         :M: matrix/None, the matrix, if provided, perform M-orthogonal.
 
     Return:
