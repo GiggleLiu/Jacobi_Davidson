@@ -45,7 +45,7 @@ class _JDLinear(lin.LinearOperator):
         self.rprojector=rprojector
         self.spmat=spmat
         spshape=spmat.shape if not isinstance(spmat,tuple) else spmat[0].shape
-        super(_JDLinear,self).__init__(spshape,matvec=self._matvec,rmatvec=self._rmatvec,dtype=spmat[0].dtype if isinstance(spmat,tuple) else spmat.dtype)
+        super(_JDLinear,self).__init__(shape=spshape,dtype=spmat[0].dtype if isinstance(spmat,tuple) else spmat.dtype)
 
     @staticmethod
     def _apply_projector(x,projector,right=False):
