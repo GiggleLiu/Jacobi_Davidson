@@ -17,15 +17,15 @@ These packages can be installed by a single command from Linux terminal::
 It is always recommended to use `Anaconda <https://www.continuum.io/downloads/>`_ to install these packages.
 
 Download the code using the `Download ZIP
-<https://github.com/GiggleLiu/Jacobi_Davidson.zip>`_
+<https://github.com/GiggleLiu/Jacobi_Davidson/archive/v1.0.tar.gz>`_
 button on github, or run the following command from a terminal::
 
-    $ wget -O nrg_mapping-master.zip https://github.com/GiggleLiu/Jacobi_Davidson.zip
+    $ wget -O Jacobi_Davidson-1.0.tar.gz https://github.com/GiggleLiu/Jacobi_Davidson/archive/v1.0.tar.gz
 
 Within a terminal, execute the following to unpack the code::
 
-    $ unzip Jacobi_Davidson-master.zip
-    $ cd Jacobi_Davidson-master/source/
+    $ tar -xvf Jacobi_Davidson-1.0.tar.gz
+    $ cd Jacobi_Davidson-1.0/source/
 
 Once the relevant software is installed, each program is contained
 entirely in a single file.  A sample file source/sample.py, for instance, can be
