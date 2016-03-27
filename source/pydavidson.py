@@ -187,6 +187,8 @@ def davidson_Basic(A,v0=None,tol=1e-10,maxiter=1000):
     DA_diag=A.diagonal()
     if v0 is None:
         v0=random.random((N,1))
+    elif ndim(v0)==1: 
+        v0=v0[:,newaxis]
     v0=_normalize(v0)
     Av=A.dot(v0)
     AV=Av
@@ -219,7 +221,7 @@ def davidson_Basic(A,v0=None,tol=1e-10,maxiter=1000):
 
 def JDh(A,v0=None,k=1,which='SL',M=None,K=None,tol=1e-10,maxiter=1000,projector=None,\
         linear_solver='bicgstab',linear_solver_maxiter=20,linear_solver_precon=False,\
-        jmax=20,jmin=5,sigma=0,converge_bound=1e-3,gap_estimate=0.1,iprint=0):
+        jmax=20,jmin=5,sigma=None,converge_bound=1e-3,gap_estimate=0.1,iprint=0):
     '''
     The Jacobi-Davidson's algorithm for the Hermitian matrix.
     
@@ -244,7 +246,7 @@ def JDh(A,v0=None,k=1,which='SL',M=None,K=None,tol=1e-10,maxiter=1000,projector=
         :linear_solver_maxiter: int, the maximum iteration for linear solver.
         :linear_solver_precon: bool, use precondioner in linear solver if True.
         :jmax/jmin: int, the maximum and minimum working space.
-        :sigma: float, the desired eigenvalue region.
+        :sigma: float/None, the desired eigenvalue region, None for not using sigma(if which=='SL' is used, use initial v0 as the critetia).
         :converge_bound: float, if current tol<converge_bound, use theta as the shift.
         :gap_estimate: float, for which = LA/SA, the gap_estimate is the distance between sigma and the smallest/largest eigen values.
         :iprint: int, the amount of details to be printed, 0 for not print, 10 for debug mode.
@@ -252,16 +254,19 @@ def JDh(A,v0=None,k=1,which='SL',M=None,K=None,tol=1e-10,maxiter=1000,projector=
     Return:
         tuple of (e,v), e is the eigenvalues and v the eigenvector e is the eigenvalues and v the eigenvectors.
     '''
+    if sigma is None and v0 is None and which=='SL':
+        raise ValueError('You must specify a desired energy or initial vector in \'SL\' mode!')
     N=A.shape[0]
     A=A.tocsr()
     if M is not None: M=M.tocsr()
     if projector is not None: projector=projector.tocsr()
     if v0 is None:
         v0=random.random((N,1))-0.5
+    elif ndim(v0)==1: 
+        v0=v0[:,newaxis]
     if projector is not None:
         v0=projector.dot(v0)
     v0=_normalize(v0)
-    if K is None and which=='SL': K=A-sigma*sps.identity(N)
     if K is not None:
         t0=time.time()
         luobj=lin.splu(K.tocsc(),permc_spec='MMD_AT_PLUS_A',options={'SymmetricMode':True,'ILU_MILU':'SILU','ILU_DropTol':1e-4,'ILU_FillTol':1e-2})
@@ -278,6 +283,7 @@ def JDh(A,v0=None,k=1,which='SL',M=None,K=None,tol=1e-10,maxiter=1000,projector=
     V,u=v0,v0
     G=v0.T.conj().dot(Av)
     theta=G[0,0]
+    if which=='SL' and sigma is None: sigma=theta  #initialize sigma by v0!
     conv_steps,lambs,Q,F=[0],[],zeros([N,0]),zeros([0,0])  #the eigenvalues and eigenvectors.
     MQ,iKMQ=Q,Q  #M*Q and K^-1*M*Q
 
