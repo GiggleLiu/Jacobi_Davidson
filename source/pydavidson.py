@@ -116,6 +116,7 @@ def _jdeq_solve(A,Q,MQ,iKMQ,r,M,invK,F,shift,tol,method='lgmres',precon=False,ma
     MQH=MQ.T.conj()
     MAT=A-shift*(M if M is not None else sps.identity(N))
     invF=inv(F)
+    x0=random.random(N)*(tol/N)
     if not precon:
         if invK is not None:
             MAT=(invK,MAT)
@@ -132,11 +133,11 @@ def _jdeq_solve(A,Q,MQ,iKMQ,r,M,invK,F,shift,tol,method='lgmres',precon=False,ma
         if method=='cg': solver=lin.cg 
         elif method=='bicg': solver=lin.bicg
         else: solver=lin.bicgstab
-        z,info=solver(system_matrix,right_hand_side,tol=tol,M=precon,maxiter=maxiter)
+        z,info=solver(system_matrix,right_hand_side,tol=tol,M=precon,maxiter=maxiter,x0=x0)
     elif method=='gmres' or method=='lgmres':
         if method=='gmres': solver=lin.gmres
         else: solver=lin.lgmres
-        z,info=solver(system_matrix,right_hand_side,tol=tol,M=precon,maxiter=maxiter)
+        z,info=solver(system_matrix,right_hand_side,tol=tol,M=precon,maxiter=maxiter,x0=x0)
     else:
         raise Exception('Unknown method for linear solver %s'%method)
     return z
@@ -341,7 +342,7 @@ def JDh(A,v0=None,k=1,which='SL',M=None,K=None,tol=1e-10,maxiter=1000,projector=
 
         #correction equation: solve approximately for z:
         #     (I-Q*Q.H)(A-theta*I)(I-Q*Q.H)z = -r, with z.T*u = 0
-        ctol=cur_tol*3e-2
+        ctol=cur_tol*1e-4
         z=_jdeq_solve(A,r=r,Q=Q_,MQ=MQ_,iKMQ=iKMQ_,invK=invK,M=M,F=F_,shift=shift,\
                 method=linear_solver,tol=ctol,precon=linear_solver_precon,maxiter=linear_solver_maxiter)[:,newaxis]
         
