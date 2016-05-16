@@ -369,5 +369,7 @@ def JDh(A,v0=None,k=1,which='SL',M=None,K=None,tol=1e-10,maxiter=1000,projector=
         gg=[[G,V.T.conj().dot(Av)],[Av.T.conj().dot(V),Av.T.conj().dot(z)]]
         G=bmat([[G,V.T.conj().dot(Av)],[Av.T.conj().dot(V),Av.T.conj().dot(z)]])
         V=concatenate([V,z],axis=1)
-    return array(lambs),Q
+    warnings.warn('Maximum iteraction reached, but no convergent pair(Err->%s)!'%cur_tol)
+    lambs.append(theta)
+    return array(lambs),Q_
 
