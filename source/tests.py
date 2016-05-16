@@ -1,7 +1,7 @@
 from numpy import *
 from scipy.linalg import norm,eigvalsh,eigh
 from scipy import sparse as sps
-from scipy.sparse.linalg import eigsh
+from scipy.sparse.linalg import eigsh,splu
 from numpy.testing import dec,assert_,assert_raises,assert_almost_equal,assert_allclose
 import pdb,time,warnings
 
@@ -79,7 +79,8 @@ class Test(object):
         N=mat.shape[0]
         k=10
         t0=time.time()
-        e2,v2=JDh(mat,k=k,v0=None,tol=1e-12,maxiter=1000,which='SL',sigma=0,linear_solver_maxiter=20,linear_solver='bicgstab',linear_solver_precon=True)
+        K=mat-sigma*sps.identity(N)
+        e2,v2=JDh(mat,k=k,v0=None,K=K,tol=1e-12,maxiter=1000,which='SL',sigma=0,linear_solver_maxiter=20,linear_solver='bicgstab',linear_solver_precon=True,iprint=1)
         t1=time.time()
         e,v=eigh(mat.toarray())
         e=e[argsort(abs(e))][:k]
