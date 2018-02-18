@@ -356,6 +356,7 @@ def JDh(A,v0=None,k=1,which='SL',M=None,K=None,tol=1e-10,maxiter=1000,projector=
         if projector is not None:
             z=projector.dot(z)
         z=mgs(z,Q_,MQ=MQ_)
+        #z=icgs(z,Q_,M=M)
         z,z_norm=icgs(z,V,M=M,return_norm=True)  #orthogonal to search space V.
         z=z/z_norm
         if iprint==10 and projector is not None:

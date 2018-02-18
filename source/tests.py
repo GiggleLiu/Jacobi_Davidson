@@ -13,6 +13,8 @@ from pydavidson import _normalize
 #2. optimize the solver for inv(A-sigma*I) with splu.
 #3. projector.
 
+random.seed(0)
+
 class Test(object):
     def __init__(self):
         N=1000
