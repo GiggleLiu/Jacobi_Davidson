@@ -21,3 +21,5 @@ core.*
 *data/
 *build/
 run.py
+pydavidson.egg-info/
+dist/

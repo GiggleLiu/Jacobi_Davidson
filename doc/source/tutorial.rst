@@ -6,12 +6,12 @@ Example
 -----------------------
 First, I will show a rather simple example, it looks like:
 
-.. literalinclude:: ../../source/sample.py
+.. literalinclude:: ../../samples/sample.py
    :linenos:
 
 The output looks like
 
-.. literalinclude:: ../../source/output.demo
+.. literalinclude:: ../../samples/output.demo
 
 A lot of time consummed in calculating the approximate K = (A-sigma*M)^-1,
 But with proper K, we find the eigenvalues converge extremely fast!
